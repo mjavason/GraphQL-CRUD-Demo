@@ -1,5 +1,5 @@
 # GraphQL-CRUD-Demo
-Simple Express.js CRUD app with GraphQL database.
+Simple Express.js CRUD app with GraphQL query language.
 
 **Prerequisites**
 
