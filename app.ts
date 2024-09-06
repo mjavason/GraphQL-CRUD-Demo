@@ -1,10 +1,13 @@
-import express, { Request, Response, NextFunction } from 'express';
-import 'express-async-errors';
-import cors from 'cors';
 import axios from 'axios';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
+import { connectToDatabase } from './database.config';
+import { graphqlHTTP } from 'express-graphql';
 import { setupSwagger } from './swagger.config';
+import 'express-async-errors';
+import { schema, root } from './graphql.schema';
 
 //#region App Setup
 const app = express();
@@ -22,7 +25,16 @@ setupSwagger(app, BASE_URL);
 //#endregion App Setup
 
 //#region Code here
-console.log('Hello world');
+// Set up the GraphQL endpoint
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true, // Enable the GraphiQL UI for testing
+  })
+);
+
 //#endregion
 
 //#region Server Setup
@@ -97,6 +109,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(PORT, async () => {
+  connectToDatabase();
   console.log(`Server running on port ${PORT}`);
 });
 
